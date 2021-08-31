@@ -20,7 +20,9 @@ mongoose.connection.on("open", function() {
 })
 
 /// enabling cross origin 
-app.use(cors())
+app.use(cors({
+    origin: '*'
+}))
 app.use(express.urlencoded({ extended: true })); //support x-www-form-urlencoded
 app.use(express.json());
 
@@ -56,38 +58,47 @@ app.get('/api/issue', async (req, res) => {
         })
     }
 
-    const { priority, label } = req.query
-    const argQuery = adminType == 1 ? { companyId: accountId } : { vendorId: accountId }
-    console.log(adminType, accountId)
-    console.log(argQuery)
+    let { priority, label, pageNumber, pageSize } = req.query
+    pageNumber = parseInt(pageNumber)
+    pageSize = parseInt(pageSize)
+    console.log(priority, label, pageNumber, pageSize)
+    // const argQuery = adminType == 1 ? { companyId: accountId } : { vendorId: accountId }
+    // console.log(adminType, accountId)
+    // console.log(argQuery)
 
-    eventCol.find({
-        $or: [
-            {
-              priority: priority
-            },
-            {
-              label: { $elemMatch : { label } }
-            }
+    let pageCount =  await issue.find({
+        $or : [
+            {priority: { $in : priority.split(",")}},
+            {label: { $in: label.split(",")}}
+        ]
+    }).count()
+
+    issue.find({
+        $or : [
+            {priority: { $in : priority.split(",")}},
+            {label: { $in: label.split(",")}}
         ]
     })
-    .then((foundEvent) => {
-        console.log(foundEvent)
-        if(err) {
-            res.status(500).send({
-                message: "Database Error",
-            })
-        }
+    .skip(pageSize * (pageNumber > 0 ? (pageNumber - 1) : pageNumber ))
+    .limit(pageSize)
+    .sort({
+        _id: 1
+    })
+    .lean(true)
+    .then((foundIssues) => {
+        console.log(foundIssues)
 
-        if(foundEvent[0]){
+        if(foundIssues[0]){
             res.status(200).send({
-                message: "success find event",
-                data: foundEvent
+                success: true,
+                data: foundIssues,
+                pages: parseInt(pageCount)
             })
         } else {
             res.status(200).send({
-                message: "no event has been created",
-                error: true
+                success: false,
+                message: "no issue found",
+                data: []
             })
         }
     })
