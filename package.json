@@ -1,0 +1,18 @@
+{
+  "name": "table-filtering",
+  "version": "1.0.0",
+  "description": "backend to host table data",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "makbarsyahwana",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "jwt-simple": "^0.5.6",
+    "mongoose": "^6.0.2"
+  }
+}
