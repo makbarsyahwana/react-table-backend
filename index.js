@@ -79,7 +79,7 @@ app.get('/api/issue', async (req, res) => {
             {label: { $in: label.split(",")}}
         ]
     })
-    .skip(pageSize * (pageNumber > 0 ? (pageNumber - 1) : pageNumber ))
+    .skip(pageSize * (pageNumber))
     .limit(pageSize)
     .sort({
         _id: 1
