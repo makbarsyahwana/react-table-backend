@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 const IssueSchema = new Schema({
     title: String,
     priority: String,
-    issueLabel: [String]
+    label: [String]
 })
 
 module.exports = mongoose.model('Issue', IssueSchema)
