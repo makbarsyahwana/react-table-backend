@@ -59,13 +59,12 @@ app.get('/api/issue', async (req, res) => {
     }
 
     let { priority, label, pageNumber, pageSize } = req.query
+
+    // make it to integer data type
     pageNumber = parseInt(pageNumber)
     pageSize = parseInt(pageSize)
-    console.log(priority, label, pageNumber, pageSize)
-    // const argQuery = adminType == 1 ? { companyId: accountId } : { vendorId: accountId }
-    // console.log(adminType, accountId)
-    // console.log(argQuery)
 
+    // get total data available
     let pageCount =  await issue.find({
         $or : [
             {priority: { $in : priority.split(",")}},
